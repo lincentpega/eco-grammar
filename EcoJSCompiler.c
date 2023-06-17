@@ -21,13 +21,470 @@ IEcoToolchainBNF1* GetBNFForSAOfJS(IEcoToolchainBNF1* pIBNF) {
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "c0-begin-state");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "translation-unit", bOptFALSE, &indexSet);
 
-    /* A.2.1 Expressions */
-    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "primary-expression");
-    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "constant", bOptFALSE, &indexSet);
+    // Part from Anashkin Ilya
 
-    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "operator");
-    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "*", bOptFALSE, &indexSet);
+    /* A.2 Expressions */
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "IdentifierReference");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Identifier", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "yield", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "await", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "BindingReference");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Identifier", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "yield", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "await", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "LabelReference");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Identifier", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "yield", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "await", bOptFALSE, &indexSet);
+
+    /* IdentifierName but not ReservedWord - кажется по интерфейсу не реализуемо but not ситуация*/
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Identifier");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierName", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "PrimaryExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "this", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierReference", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Literal", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ArrayLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ObjectLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "FunctionExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "GeneratorExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AsyncFunctionExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AsyncGeneratorExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RegularExpressionLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CoverParenthesizedExpressionAndArrowParameterList", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "CoverParenthesizedExpressionAndArrowParameterList");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "...", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BindingIdentifier", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "...", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BindingIdentifier", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "...", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BindingPattern", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ParenthesizedExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Literal");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NullLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BooleanLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NumericLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "StringLiteral", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ArrayLiteral");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "[", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Elision", bOptTRUE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "[", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ElementList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "[", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ElementList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Elision", bOptTRUE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ElementList");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Elision", bOptTRUE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Elision", bOptTRUE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "SpreadElement", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ElementList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Elision", bOptTRUE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ElementList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Elision", bOptTRUE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "SpreadElement", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Elision");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, ",", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Elision", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "SpreadElement");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "...", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ObjectLiteral");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "{", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "}", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "{", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PropertyDefinitionList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "}", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "{", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PropertyDefinitionList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "}", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "PropertyDefinitionList");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "PropertyDefinition", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "PropertyDefinitionList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PropertyDefinition", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "PropertyDefinition");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierReference", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CoverInitializedname", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "PropertyName", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ":", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MethodDefinition", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "...", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "PropertyName");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LiteralPropertyName", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ComputedPropertyName", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "LiteralPropertyName");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierName", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "StringLiteral", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NumericLiteral", bOptFALSE, &indexSet);
+    
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ComputedPropertyName");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "[", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "CoverInitializedName");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierReference", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Initializer", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Initializer");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "=", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "TemplateLiteral");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NoSubstitutionTemplate", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "SubstitutionTemplate", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "SubstitutionTemplate");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateHead", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateSpans", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "TemplateSpans");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateTail", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateMiddleList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateTail", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "TemplateMiddleList");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateMiddle", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "TemplateMiddleList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateMiddle", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "MemberExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "PrimaryExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "[", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "IdentifierName", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateLiteral", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "SuperProperty", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MetaProperty", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "new", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "MemberExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PrivateIdentifier", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "SuperProperty");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "super", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "[", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "super", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "IdentifierName", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "super", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "MetaProperty");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NewTarget", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ImportMeta", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "NewTarget");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "new", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "target", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ImportMeta");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "import", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "meta", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "NewExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "new", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "NewExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "CallExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CoverCallExpressionAndAsyncArrowHead", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "SuperCall", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ImportCall", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "[", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "IdentifierName", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateLiteral", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PrivateIdentifier", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "CallMemberExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "SuperCall");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "super", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ImportCall");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "import", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "(", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Arguments");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ArgumentList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "(", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ArgumentList", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ")", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ArgumentList");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "...", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ArgumentList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ArgumentList", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "...", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "OptionalExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MemberExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "OptionalChain", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "OptionalChain", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "OptionalChain", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "OptionalChain");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "?.", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "?.", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "[", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "?.", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "IdentifierName", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "?.", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateLiteral", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "?.", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PrivateIdentifier", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalChain", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Arguments", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalChain", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "[", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Expression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "]", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalChain", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "IdentifierName", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalChain", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "TemplateLiteral", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalChain", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ".", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "PrivateIdentifier", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "LeftHandSideExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "NewExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "CallExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "OptionalExpression", bOptFALSE, &indexSet);
+
+    // no LineTerminator here - нет возможности добавить
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "UpdateExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LeftHandSideExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LeftHandSideExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "++", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LeftHandSideExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "--", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "++", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "--", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "UnaryExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "UpdateExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "delete", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "void", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "typeof", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "+", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "-", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "~", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "!", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "UnaryExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AwaitExpression", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ExponentiationExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "UnaryExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "UpdateExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "**", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ExponentiationExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "MultiplicativeExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ExponentiationExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MultiplicativeExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "MultiplicativeOperator", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ExponentiationExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "MultiplicativeOperator");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "*", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "/", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "%", bOptFALSE, &indexSet);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AdditiveOperator");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "MultiplicativeExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AdditiveExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "+", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "MultiplicativeExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AdditiveExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "-", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "MultiplicativeExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "ShiftExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AdditiveExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ShiftExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "<<", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AdditiveExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ShiftExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ">>", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AdditiveExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ShiftExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ">>>", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AdditiveExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "RelationalExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "ShiftExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "<", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ">", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "<=", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ">=", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "instanceof", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "in", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "PrivateIdentifier", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "in", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "ShiftExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "EqualityExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "RelationalExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "EqualityExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "==", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "RelationalExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "EqualityExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "!=", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "RelationalExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "EqualityExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "===", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "RelationalExpression", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "EqualityExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "!==", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "RelationalExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "BitwiseANDExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "EqualityExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseANDExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "&", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "EqualityExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "BitwiseXORExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseANDExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseXORExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "^", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BitwiseANDExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "BitwiseORExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseXORExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseORExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "|", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BitwiseXORExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "LogicalANDExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BitwiseORExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LogicalANDExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "&&", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "BitwiseORExpression", bOptFALSE);
+
+    pIRule = pIBNF->pVTbl->AddRule(pIBNF, "LogicalORExpression");
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LogicalANDExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LogicalORExpression", bOptFALSE, &indexSet);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "||", bOptFALSE);
+    pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "LogicalANDExpression", bOptFALSE);
+
+    // Part from Daniel Pustotin
 
     /* A.4 Functions and Classes */
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "UniqueFormalParameters");
