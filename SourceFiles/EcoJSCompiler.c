@@ -118,26 +118,22 @@ IEcoToolchainBNF1* GetBNFForSAOfJS(IEcoToolchainBNF1* pIBNF) {
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "...", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "DestructuringAssignmentTarget", bOptFALSE);
 
-    // rule for AssignmentPropertyList
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentPropertyList");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentProperty", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentPropertyList", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptTRUE);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentProperty", bOptFALSE);
 
-    // rule for AssignmentElementList
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentElementList");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentElisionElement", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentElementList", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptTRUE);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentElisionElement", bOptFALSE);
-
-    // rule for AssignmentElisionElement
+    
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentElisionElement");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Elision", bOptTRUE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentElement", bOptFALSE);
 
-    // rule for AssignmentProperty
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentProperty");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "IdentifierReference", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Initializer", bOptTRUE);
@@ -145,28 +141,23 @@ IEcoToolchainBNF1* GetBNFForSAOfJS(IEcoToolchainBNF1* pIBNF) {
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ":", bOptFALSE);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentElement", bOptFALSE);
 
-    // rule for AssignmentElement
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentElement");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "DestructuringAssignmentTarget", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "Initializer", bOptTRUE);
 
-    // rule for AssignmentRestElement
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "AssignmentRestElement");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "...", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "DestructuringAssignmentTarget", bOptFALSE);
 
-    // rule for DestructuringAssignmentTarget
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "DestructuringAssignmentTarget");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "LeftHandSideExpression", bOptFALSE, &indexSet);
 
-    // rule for Expression
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Expression");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "AssignmentExpression", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "Expression", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  ",", bOptTRUE);
     pIElement = pIRule->pVTbl->AddConcatenation(pIRule, indexSet,  "AssignmentExpression", bOptFALSE);
 
-    // A3 Statements
     pIRule = pIBNF->pVTbl->AddRule(pIBNF, "Statement");
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "BlockStatement", bOptFALSE, &indexSet);
     pIElement = pIRule->pVTbl->AddAlternative(pIRule, "VariableStatement", bOptFALSE, &indexSet);
