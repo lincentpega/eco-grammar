@@ -9,6 +9,9 @@
  * </описание>
  *
  */
+
+#include "EcoMyGrammar.h"
+
 IEcoToolchainBNF1* GetBNFForSAOfJS(IEcoToolchainBNF1* pIBNF) {
     /* Интерфейсы для работы с грамматикой */
     IEcoToolchainBNF1Rule* pIRule = 0;

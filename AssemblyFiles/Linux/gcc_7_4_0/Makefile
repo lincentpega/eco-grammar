@@ -24,6 +24,7 @@ endif
 
 # source files.
 SRC = \
+../../../SourceFiles/EcoJSCompiler.c \
 ../../../SourceFiles/EcoMyGrammar.c \
 ../../../SourceFiles/EcoOutputDiagnostic.c \
 ../../../SourceFiles/EcoMySimpleCompiler.c
